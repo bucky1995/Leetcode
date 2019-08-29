@@ -50,4 +50,51 @@ public:
         }
         return n1;
     }
+    
+    bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
+        if(rec1[2]<=rec2[0]||rec1[0]>=rec2[2]||rec1[1]>=rec2[3]||rec1[3]<=rec2[1]){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    bool validWordAbbreviation(string word, string abbr) {
+        int i = 0, j = 0;
+        while (i < word.size() && j < abbr.size()) {
+            if (isdigit(abbr[j])) {
+                if (abbr[j] == '0'){
+                    return false;
+                }
+                int Deviation = 0;
+                while (j < abbr.size() && isdigit(abbr[j])) {
+                    Deviation = Deviation * 10 + abbr[j] - '0';
+                    j++;
+                }
+                i=i+Deviation;
+            }else if (word[i] != abbr[j]) {
+                return false;
+            }else{
+                i++;j++;
+            }
+        }
+        return i == word.size() && j == abbr.size();
+    }  
+
+    bool isOneEditDistance(string s, string t) {
+        int m=s.size(),n=t.size();
+        if(m>n){
+            return isOneEditDistance(t,s);
+        }
+        for(int i=0;i<n;i++){
+            if(s[i]!=t[i]){
+                if(m==n){
+                    return s.substr(i+1)==t.substr(i+1);
+                }else{
+                    return s.substr(i)==t.substr(i+1);
+                }
+            }
+        }
+        return false;
+    }
 };
