@@ -5,32 +5,23 @@ using namespace std;
 
 class Solution {
 public:
-    bool isIsomorphic(string s, string t) {
-        if( s.length()!=t.length()){
-            return false;
-        }
-        int length=t.length();
-        
-        unordered_map<char,char> hashstot;
-        unordered_map<char,char> hashttos;
-        for(int i=0;i<length;i++){
-            if(hashstot.find(s[i])!=hashstot.end()){
-                {   
-                    if(hashstot[s[i]]!=t[i]){
-                        return false;
-                    }
-                }
-            }
-            else if(hashttos.find(t[i])!=hashttos.end()){
-                    if(hashttos[t[i]]!=s[i]){
-                        return false;
-                    }
-            }else{
-                hashstot[s[i]]=t[i];
-                hashttos[t[i]]=s[i];
+    bool knows(int a, int b);
+    int findCelebrity_1(int n) {
+        int candidates = 0;
+        for(int i=1;i<n;i++){
+            if(knows(candidates,i)){
+                candidates=i;
             }
         }
-        return true;
+        for(int i=0;i<n;i++){
+            if(!knows(i,candidates)){
+                return -1;
+            }
+            if(knows(candidates,i)&&i!=candidates){
+                return -1;
+            }
+        }
+        return candidates;
     }
 
     int numDecodings(string s) {
@@ -49,14 +40,6 @@ public:
             n0=tmp;
         }
         return n1;
-    }
-    
-    bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
-        if(rec1[2]<=rec2[0]||rec1[0]>=rec2[2]||rec1[1]>=rec2[3]||rec1[3]<=rec2[1]){
-            return false;
-        }else{
-            return true;
-        }
     }
 
     bool validWordAbbreviation(string word, string abbr) {
@@ -96,5 +79,53 @@ public:
             }
         }
         return false;
+    }
+     
+    //Greedy Alogrithm
+    string intToRoman(int num) {
+        vector<string> Ro={"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+        vector<int> val={1000,900,500,400,100,90,50,40,10,9,5,4,1};
+        string result;
+        for(int i=0;i<Ro.size();i++){
+            while(num>=val[i]){
+                result+=Ro[i];
+                num-=val[i];
+            }
+        }
+        return result;
+    }
+
+    vector<int> combine(vector<int> a,vector<int> b){
+        int min = a[0];
+        int max = a[1]>b[1]?a[1]:b[1];
+        vector<int> result;
+        result.push_back(min);
+        result.push_back(max);
+        return result;
+    }
+    static bool compare(vector<int> a, vector<int> b){
+        return (a[0]<b[0]);
+    }
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<vector<int>> result;
+        vector<int> temp;
+        if(intervals.size()<=1){
+            return intervals;
+        }
+        
+        sort(intervals.begin(),intervals.end(),compare);
+        
+        result.push_back(intervals[0]);
+        
+        for(int i=1;i<intervals.size();i++){
+            if(intervals[i][0]<=result.back()[1]){
+                temp=result.back();
+                result.pop_back();
+                result.push_back(combine(temp,intervals[i]));
+            }else{
+                result.push_back(intervals[i]);
+            }
+        }
+        return result;
     }
 };
