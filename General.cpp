@@ -42,28 +42,6 @@ public:
         return n1;
     }
 
-    bool validWordAbbreviation(string word, string abbr) {
-        int i = 0, j = 0;
-        while (i < word.size() && j < abbr.size()) {
-            if (isdigit(abbr[j])) {
-                if (abbr[j] == '0'){
-                    return false;
-                }
-                int Deviation = 0;
-                while (j < abbr.size() && isdigit(abbr[j])) {
-                    Deviation = Deviation * 10 + abbr[j] - '0';
-                    j++;
-                }
-                i=i+Deviation;
-            }else if (word[i] != abbr[j]) {
-                return false;
-            }else{
-                i++;j++;
-            }
-        }
-        return i == word.size() && j == abbr.size();
-    }  
-
     bool isOneEditDistance(string s, string t) {
         int m=s.size(),n=t.size();
         if(m>n){
@@ -95,37 +73,5 @@ public:
         return result;
     }
 
-    vector<int> combine(vector<int> a,vector<int> b){
-        int min = a[0];
-        int max = a[1]>b[1]?a[1]:b[1];
-        vector<int> result;
-        result.push_back(min);
-        result.push_back(max);
-        return result;
-    }
-    static bool compare(vector<int> a, vector<int> b){
-        return (a[0]<b[0]);
-    }
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        vector<vector<int>> result;
-        vector<int> temp;
-        if(intervals.size()<=1){
-            return intervals;
-        }
-        
-        sort(intervals.begin(),intervals.end(),compare);
-        
-        result.push_back(intervals[0]);
-        
-        for(int i=1;i<intervals.size();i++){
-            if(intervals[i][0]<=result.back()[1]){
-                temp=result.back();
-                result.pop_back();
-                result.push_back(combine(temp,intervals[i]));
-            }else{
-                result.push_back(intervals[i]);
-            }
-        }
-        return result;
-    }
+
 };
