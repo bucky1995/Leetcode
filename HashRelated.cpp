@@ -1,5 +1,6 @@
 #include <iostream> 
 #include <unordered_map> 
+#include <unordered_set> 
 #include<vector>
 using namespace std;
 
@@ -84,4 +85,72 @@ public:
         }
         return true;
     }
+
 };
+
+class ValidWordAbbr {
+/**
+ * Your ValidWordAbbr object will be instantiated and called as such:
+ * ValidWordAbbr* obj = new ValidWordAbbr(dictionary);
+ * bool param_1 = obj->isUnique(word);
+ */
+private:
+    unordered_map<string,int> dichash;
+    unordered_map<string,int> abbrdichash;
+public:
+    string abbr(string word){
+        string abbr;
+        if(word.size()>2){
+            abbr.push_back(word[0]);
+            abbr+=to_string(word.size()-2);
+            abbr.push_back(word.back());
+        }else{
+            abbr=word;
+        }
+        
+        return abbr;
+    }
+    
+    ValidWordAbbr(vector<string>& dictionary) {
+        string word;
+        for(int i=0;i<dictionary.size();i++){
+            word=abbr(dictionary[i]);
+            dichash[dictionary[i]]++;
+            abbrdichash[word]++;
+        }
+    }
+    
+    bool isUnique(string word) {
+        string abb;
+        abb=abbr(word);
+        
+        if(dichash.find(word)!=dichash.end()){
+            return dichash[word]==abbrdichash[abb];
+        }else{
+            return abbrdichash[abb]==0;
+        }
+    }
+
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> hash(nums.begin(),nums.end());
+        int res=0,pre,next;
+        for(int i=0;i<nums.size();i++){
+            if(hash.find(nums[i])!=hash.end()){
+                hash.erase(nums[i]);
+                pre=nums[i]-1;
+                next=nums[i]+1;
+                while(hash.find(pre)!=hash.end()){
+                    hash.erase(pre);
+                    pre--;
+                }
+                while(hash.find(next)!=hash.end()){
+                    hash.erase(next);
+                    next++;
+                }
+                res=max(res,next-pre-1);
+            }
+        }
+        return res;
+    }
+};
+

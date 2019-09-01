@@ -4,6 +4,7 @@
         "string": "cpp",
         "iosfwd": "cpp",
         "unordered_map": "cpp",
-        "__hash_table": "cpp"
+        "__hash_table": "cpp",
+        "unordered_set": "cpp"
     }
 }
