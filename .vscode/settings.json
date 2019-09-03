@@ -5,6 +5,7 @@
         "iosfwd": "cpp",
         "unordered_map": "cpp",
         "__hash_table": "cpp",
-        "unordered_set": "cpp"
+        "unordered_set": "cpp",
+        "iterator": "cpp"
     }
 }
