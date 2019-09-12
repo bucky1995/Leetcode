@@ -73,4 +73,100 @@ public:
         }
         return result;
     }
+
+    int partitation(int left,int right,vector<int>& nums){
+        int piviot=right;
+        int pos=left-1;
+        for(int i=left;i<right;i++){
+            if(nums[i]<nums[piviot]){
+                pos++;
+                swap(nums[pos],nums[i]);
+            }
+        }
+        pos++;
+        swap(nums[right],nums[pos]);
+        return pos;
+    }
+    void quicksort(int left, int right,vector<int>& nums){
+        if(left>=right) return;
+        
+        int piviot=partitation(left,right,nums);
+        
+        quicksort(left,piviot-1,nums);
+        quicksort(piviot+1,right,nums);
+    }
+    
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        if(nums.size()==0)   return res;
+        
+        quicksort(0,nums.size()-1,nums);
+        
+        for(int i=0;i<nums.size();i++){
+            if(i>0&&nums[i]==nums[i-1]) continue;
+            
+            if(nums[i]>0)   break;
+            
+            int left=i+1,right=nums.size()-1;
+            
+            int remain = 0-nums[i];
+            
+            while(left<right){
+                if(right<nums.size()-1&&nums[right]==nums[right+1]){
+                    right--;
+                    continue;
+                }
+                if(nums[left]+nums[right]==remain){
+                    res.push_back(vector<int>({nums[i],nums[left],nums[right]}));
+                    right--;left++;
+                }else if(nums[left]+nums[right]<remain){
+                    left++;
+                }else if(nums[left]+nums[right]>remain){
+                    right--;
+                }
+            }
+        }
+        return res;
+    }
+
+    int threeSumClosest(vector<int>& nums, int target) {
+        quicksort(0,nums.size()-1,nums);
+        int res=target-100000;
+        for(int i=0;i<nums.size();i++){
+            int left=i+1;
+            int right=nums.size()-1;
+            while(left<right){
+                if(right<nums.size()-1&&nums[right]==nums[right+1]){
+                    right--;
+                    continue;
+                }
+                
+                int temp=nums[i]+nums[left]+nums[right];
+                
+                if(abs(temp-target)<abs(res-target)){
+                    res=temp;
+                }
+                if(temp<=target){
+                    left++;
+                }else{
+                    right--;
+                }
+            }
+        }
+        return res;  
+    }
+
+    void rotate(vector<vector<int>>& matrix) {
+        int a =0;
+        int b=matrix.size()-1;
+        while(a<b){
+            for(int i=0;i<b-a;i++){
+                swap(matrix[a][a+i],matrix[a+i][b]);
+                swap(matrix[a][a+i],matrix[b][b-i]);
+                swap(matrix[a][a+i],matrix[b-i][a]);
+            }
+            a++;b--;
+        }
+    }
+
 };

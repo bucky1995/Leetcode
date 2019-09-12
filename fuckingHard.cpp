@@ -3,6 +3,11 @@
 #include <vector>
 #include <queue>
 using namespace std;
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+ };
 
 class Solution {
 public:
@@ -125,5 +130,84 @@ public:
         hash[""]={""};
         deepSquares(words,words[0].size(),vector<string>(),res);
         return res;
+    }
+
+    string minWindow(string s, string t) {
+        if (s.length() == 0 || t.length() == 0) {
+            return "";
+        }
+
+        unordered_map<char,int> hash;
+        for(int i=0;i<t.size();i++){
+            hash[t[i]]++;
+        }
+        int count=hash.size();
+        int start=0,tail=0;
+        int minlen=INT_MAX;
+        string res="";
+        int resStart=0;
+        for(;tail<s.size();tail++){
+            if(hash.find(s[tail])!=hash.end()){
+                hash[s[tail]]--;
+                if(hash[s[tail]]==0){
+                    count--;
+                }
+            }
+            if(count==0){
+
+                do{
+                    if(hash.find(s[start])!=hash.end()){
+                        hash[s[start]]++;
+                        if(hash[s[start]]>0)
+                            count++;
+                    }
+                    start++;
+                }while(count==0);
+                start--;
+                if(minlen>tail-start+1){
+                    resStart=start;
+                    minlen=tail-start+1;
+                }
+                start++;
+            }
+        }
+        if(minlen==INT_MAX){
+            return "";
+        }else{
+            return s.substr(resStart,minlen);
+        }
+    }
+
+    //Divide and concue, so damn clever
+    ListNode* mergeTwo(ListNode* a,ListNode* b){
+        ListNode* res;
+        if(a==NULL){
+            return b;
+        }else if(b==NULL){
+            return a;
+        }
+        if(a->val<=b->val){
+            res=a;
+            res->next=mergeTwo(a->next,b);
+        }else{
+            res=b;
+            res->next=mergeTwo(a,b->next);
+        }
+        return res;
+    }
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.size()==0){
+            return NULL;
+        }
+        int k=lists.size()-1;
+        while(k!=0){
+            int i=0,j=k;
+            while(i<j){
+                lists[i]=mergeTwo(lists[i],lists[j]);
+                i++;j--;
+            }
+            k=j;
+        }
+        return lists[0]; 
     }
 };

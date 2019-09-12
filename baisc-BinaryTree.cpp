@@ -57,4 +57,42 @@ public:
         }
         return res;
     }
+
+    bool validBST(TreeNode* root,TreeNode* min,TreeNode* max){
+        if(!root)   return true;
+        if(max){
+            if(root->val>=max->val){
+                return false;
+            }
+        }
+        if(min){
+            if(root->val<=min->val){
+                return false;
+            }
+        }
+        return validBST(root->left,min,root)&&validBST(root->right,root,max);
+    }      
+    bool isValidBST(TreeNode* root) {
+        if(root==NULL)
+            return true;
+        return validBST(root,NULL,NULL);
+    }
+
+    int find(TreeNode* root,int &res){//think this as find maxsum subtree with prune;
+        if(root==NULL)  return 0;
+        
+        int l,r;
+        
+        l=max(find(root->left,res),0);
+        r=max(find(root->right,res),0);
+        
+        res=max(res,l+r+root->val);
+        
+        return (root->val+max(l,r));
+    }
+    int maxPathSum(TreeNode* root) {
+        int max=INT_MIN;
+        find(root,max);
+        return max;
+    }
 };
