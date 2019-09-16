@@ -169,4 +169,85 @@ public:
         }
     }
 
+    void nextPermutation(vector<int>& nums) {
+        int i = nums.size()-1;
+        while(i>0&&nums[i]<=nums[i-1]){
+            i--;
+        }
+        if(i==0){
+            sort(nums.begin(),nums.end());
+            return;
+        }
+        i--;
+        int min_max = i+1;
+        for(int j=i+2;j<nums.size();j++){
+            if(nums[j]-nums[i]>0&&nums[min_max]-nums[i]>nums[j]-nums[i]){
+                min_max = j;
+            }
+        }
+        swap(nums[min_max],nums[i]);
+        sort(nums.begin()+i+1,nums.end());
+        return ;
+    }
+
+    vector<int> shortestDistanceColor(vector<int>& colors, vector<vector<int>>& queries) {
+        unordered_map<int,queue<int>> hash;
+        
+        for(int i=0;i<colors.size();i++){
+            hash[colors[i]].push(i);
+        }
+        
+        unordered_map<int,vector<int>> dis;
+        
+        vector<int> next ({INT_MAX,INT_MAX,INT_MAX});
+        
+        for(int i=0;i<colors.size();i++){
+            int color = colors[i];
+            for(int j=1;j<=3;j++){
+                if(next[j-1]==INT_MAX&&hash[j].empty()){
+                    dis[i].push_back(-1);
+                }else{
+                    if(!hash[j].empty() && hash[j].front() == i) {
+                        next[j-1] = i;
+                        hash[j].pop();
+                    }
+                    dis[i].push_back(min(abs(next[j-1] - i), (hash[j].empty() ? INT_MAX : abs(i - hash[j].front()))));
+                }
+            } 
+        }
+        
+        vector<int> res;
+        for(int i=0;i<queries.size();i++){
+            res.push_back(dis[queries[i][0]][queries[i][1]-1]);
+        }
+                                     
+        return res;
+
+    }
+
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> res;
+        vector<int> counts(256,0),countp(256,0);
+        unordered_map<char,int> count;
+        if(s.size()==0||p.size()>s.size()){
+            return res;
+        }
+        for(int i=0;i<p.size();i++){
+            counts[s[i]]++;
+            countp[p[i]]++;
+        }
+        if(counts==countp){
+            res.push_back(0);
+        }
+        counts[s[0]]--;
+        for(int i=1;i<=s.size()-p.size();i++){
+            counts[s[i+p.size()-1]]++;
+            if(counts==countp){
+                res.push_back(i);
+            }
+            counts[s[i]]--;
+        }
+        return res;
+    }
+
 };
