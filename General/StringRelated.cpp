@@ -1,6 +1,7 @@
 #include <iostream> 
 #include <unordered_map> 
 #include <vector>
+#include <unordered_set> 
 using namespace std;
 
 class Solution {
@@ -182,5 +183,70 @@ public:
         }
 
         return result;
+    }
+
+    vector<char> v = {'a','e','i','o','u',
+                     'A','E','I','O','U'};
+    unordered_set<char> vowel;
+    
+    string transfer(string word){
+        for(int j=0;j<word.size();j++){
+            if(word[j]<='Z'){
+                word[j]+=32;
+            }
+            if(vowel.find(word[j])!=vowel.end()){
+                word[j] = '*';
+            }
+        }
+        return word;
+    }
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        copy(v.begin(),v.end(),inserter(vowel,vowel.end()));
+        unordered_map<string,vector<string>> hash;
+        vector<string> res;
+        
+        for(int i=0;i<wordlist.size();i++){
+            string word = transfer(wordlist[i]);
+            hash[word].push_back(wordlist[i]);
+        }
+        
+        for(int i=0;i<queries.size();i++){
+            string word = transfer(queries[i]);
+            if(hash.find(word)!=hash.end()){
+                vector<string> waitlist = hash[word];
+                word = queries[i];
+                string temp = "";
+                bool find = false;
+                int min = INT_MAX;
+                for(int j=0;j<waitlist.size();j++){
+                    if(waitlist[j] == word){
+                        temp = waitlist[j];
+                        break;
+                    }else if(waitlist[j].size() == word.size()&&(!find)){
+                        find = true;
+                        for(int k=0;k<word.size();k++){
+                            if(word[k]!=waitlist[j][k]){
+                                if(abs(word[k]-waitlist[j][k])==32){
+                                    continue;
+                                }else if(vowel.find(word[k])!=vowel.end()&&
+                                         vowel.find(waitlist[j][k])!=vowel.end()){
+                                    continue;
+                                }else{
+                                    find = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if(find){
+                            temp = waitlist[j];
+                        }
+                    }
+                }
+                res.push_back(temp);
+            }else{
+                res.push_back("");
+            }
+        }
+        return res;
     }
 };

@@ -210,4 +210,48 @@ public:
         }
         return lists[0]; 
     }
+
+    int kSimilarity(string A, string B) {
+        queue<string> q;
+        unordered_map<string,int> hash;
+        
+        hash[A] = 0;
+        q.push(A);
+        int res = -1;
+        
+        while(!q.empty()){
+            string temp = q.front();
+            q.pop();
+            if(temp == B){
+                res = hash[temp];
+                break;
+            }
+            
+            vector<string> neighber = getne(temp,B);
+            res = q.size();
+            for(int i = 0;i<neighber.size();i++){
+                if(hash.find(neighber[i])==hash.end()){
+                    hash[neighber[i]] = hash[temp]+1;
+                    q.push(neighber[i]);
+                }
+            }
+        }
+        return res;
+    }
+    vector<string> getne(string a, string target){
+        int i=0;
+        vector<string> res;
+        for(;i<target.size();++i){
+            if(a[i]!=target[i])
+                break;
+        }
+        for(int j=i+1;j<target.size();j++){
+            if(a[j] == target[i]){
+                swap(a[i] , a[j]);
+                res.push_back(a);
+                swap(a[i] , a[j]);
+            }
+        }
+        return res;
+    }
 };

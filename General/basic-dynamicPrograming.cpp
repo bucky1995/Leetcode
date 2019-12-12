@@ -125,4 +125,77 @@ public:
         }
         return buffer[n];
     }
+
+    int minPathSum(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        if(n ==0)   return 0;
+        vector<vector<int>> sum(2,vector<int>(m,0));
+        sum[0][0] = grid[0][0];
+        int cr = 1,pr = 0;
+        for(int i=1;i<m;i++){
+            sum[0][i] = grid[0][i] + sum[0][i-1];
+        }
+        for(int i=1;i<n;i++){
+            sum[cr][0] = grid[i][0] + sum[pr][0];
+            for(int j = 1;j<m;j++){
+                int left = sum[cr][j-1];
+                int up = sum[pr][j];
+                sum[cr][j] = grid[i][j] + min(left,up);
+            }
+            cr = (cr == 1 ? 0:1);
+            pr = (pr == 1 ? 0:1);
+        }
+        return sum[pr][m-1];
+    }
+
+    int numSquares(int n) {
+        vector<int> cache(n+1,0);
+        for(int i=1;i<=n;i++){
+            cache[i] = INT_MAX;
+            for(int j=1;j*j<=i;j++){
+                cache[i] = min(cache[i], cache[i-j*j]+1);
+            }
+        }
+        return cache[n];
+    }
+
+    vector<vector<bool>> isPalin(string s){
+        int n = s.size();
+        vector<vector<bool>> res(n,vector<bool>(n,false));
+        for(int c = 0;c<n;c++){
+            int left = c;
+            int right = c;
+            while(left>=0&&right<n&&s[left] == s[right]){
+                res[left][right] = true;
+                left--;
+                right++;
+            }
+        }
+        for(int c = 0;c<n-1;c++){
+            int left = c;
+            int right = c+1;
+            while(left>=0&&right<n&&s[left] == s[right]){
+                res[left][right] = true;
+                left--;
+                right++;
+            }
+        }
+        return res;
+    }
+    int minCut(string s) {
+        int n = s.size();
+        if(n == 0)  return 0;
+        vector<vector<bool>> isPa = isPalin(s);
+        vector<int> buffer(n+1,INT_MAX);
+        buffer[0] = 0;
+        for(int i=1;i<=n;i++){
+            for(int j = 0;j<i;j++){
+                if(isPa[j][i-1]){
+                    buffer[i] = min(buffer[i],buffer[j]+1);
+                }
+            }
+        }
+        return buffer[n]-1;
+    }
 };
