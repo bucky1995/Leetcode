@@ -5,36 +5,37 @@ using namespace std;
 
 class Solution {
 public:
-    void swap(int a, int b, vector<int>* nums){
-        int temp=(*nums)[a];
-        (*nums)[a]=(*nums)[b];
-        (*nums)[b]=temp;
+    void swap(int left, int right, vector<int> &nums){
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
     }
-    int partition(vector<int> *nums, int low, int high){
-        int piviot = (*nums)[high];
-        int i = (low-1);
 
-        for(int j=low;j<=high;j++){
-            if((*nums)[j]<piviot){
-                i++;
-                swap(i,j,nums);
+    int partition(int left, int right, vector<int> &nums){
+        int pi = right;
+        right--;
+        while(left<=right){
+            while(left <= right && nums[left]<nums[pi]){
+                left++;
+            }
+            while(left<= right && nums[right]>=nums[pi]){
+                right--;
+            }
+            if(left<=right) {
+                swap(left, right, nums);
+                left++;
+                right--;
             }
         }
-        swap(i+1,high,nums);
-        return (i+1);
+        swap(left,pi,nums);
+        return left;
     }
-    
-    void quickSort(vector<int>* nums,int low, int high){
-        if(low < high){
-            int pi = partition(nums,low, high);
+    void quick_sort(int left, int right, vector<int> &nums) {
+        if(left<right){
+            int pi = partition(left,right,nums);
 
-            quickSort(nums,low,pi-1);
-            quickSort(nums,pi+1,high);
+            quick_sort(left,pi-1,nums);
+            quick_sort(pi+1,right,nums);
         }
-    }
-
-    vector<int> sortArray(vector<int>& nums) {
-        quickSort(&nums,0,nums.size()-1);
-        return nums;    
     }
 };
