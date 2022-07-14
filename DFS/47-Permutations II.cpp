@@ -1,38 +1,35 @@
 class Solution {
 public:
+    unordered_map<int, int> count;
+    int n;
     vector<vector<int>> res;
-    unordered_map<int, int> map;
-    void DFS(vector<int>& num_options, vector<int> current_order, int length){
-        if(current_order.size() == length){
-            res.push_back(current_order);
+    void deep_gen(unordered_set<int> nums, vector<int> buffer){
+        if(buffer.size() == n){
+            res.push_back(buffer);
             return;
         }
-        
-        for(int i=0;i<num_options.size();i++){
-            if(map[num_options[i]]>0){
-                current_order.push_back(num_options[i]);
-                map[num_options[i]]--;
-                DFS(num_options, current_order, length);
-                map[num_options[i]]++;
-                current_order.pop_back();
-            }
-            
+        for(auto it = nums.begin(); it!= nums.end();it++){
+            int num = *it;
+            buffer.push_back(num);
+            count[num]--;
+            unordered_set<int> temp = nums;
+            if(count[num] ==0)  temp.erase(num);
+            deep_gen(temp, buffer);
+            buffer.pop_back();
+            count[num]++;
         }
-        
     }
     vector<vector<int>> permuteUnique(vector<int>& nums) {
-        
-        vector<int> num_options;
+        vector<int> unique_nums = nums;
+        unique_nums.erase(unique(unique_nums.begin(),unique_nums.end()), unique_nums.end());
+        unordered_set<int> hash;
+        hash.insert(unique_nums.begin(), unique_nums.end());
         for(int i=0;i<nums.size();i++){
-            if(map.find(nums[i]) == map.end()){
-                num_options.push_back(nums[i]);
-                map[nums[i]] = 1;
-            }else{
-                map[nums[i]]++;
-            }
+            count[nums[i]]++;
         }
-        
-        DFS(num_options, {}, nums.size());
+        n = nums.size();
+        deep_gen(hash, vector<int>({}));
         return res;
+        
     }
 };
