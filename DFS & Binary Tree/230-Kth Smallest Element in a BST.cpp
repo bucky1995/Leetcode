@@ -11,48 +11,27 @@
  */
 class Solution {
 public:
-    bool find = false;
-    int ks;
-    int cur_k = 0;
-    void travel(TreeNode* root, int k){
+    int cur;
+    bool stop;
+    int res;
+    void inTravel(TreeNode* root, int k){
         if(root == NULL){
             return;
         }
-        travel(root->left,k);
-        cur_k++;
-        if(cur_k == k){
-            ks = root->val;
-            find = true;
-        }
-        if(find){
+        inTravel(root->left,k);
+        if(stop)    return;
+        cur++;
+        if(cur == k){
+            stop = true;
+            res = root->val;
             return;
         }
-        travel(root->right,k);
+        inTravel(root->right,k);        
     }
-    
     int kthSmallest(TreeNode* root, int k) {
-        //travel(root, k);
-        //return ks;
-        
-        vector<TreeNode*> buffer;
-        TreeNode* node = root;
-        while(node!=NULL){
-            buffer.push_back(node);
-            node = node->left;
-        }
-        
-        for(int i=0;i<k-1;i++){
-            TreeNode* temp = buffer.back();
-            buffer.pop_back();
-            if(temp->right!= NULL){
-                temp = temp->right;
-                while(temp!=NULL){
-                    buffer.push_back(temp);
-                    temp = temp->left;
-                }
-            }
-        }
-        
-        return buffer.back()->val;
+        cur = 0;
+        stop = false;
+        inTravel(root, k);
+        return res;
     }
 };

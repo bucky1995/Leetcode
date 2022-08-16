@@ -24,8 +24,10 @@ public:
         while(inorder[i] != root_val){
             i++;
         }
+
         vector<int> left = vector<int> (inorder.begin(), inorder.begin()+i);
         vector<int> right = vector<int> (inorder.begin()+i+1, inorder.end());
+        
         root->right = buildTree(right, postorder);
         root->left = buildTree(left, postorder);
         return root;

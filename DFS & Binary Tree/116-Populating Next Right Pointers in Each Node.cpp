@@ -40,3 +40,28 @@ public:
         return root;
     }
 };
+
+class Solution {
+public:
+    void getNode(vector<Node*> buffer){
+        if(buffer.size() == 0)  return;
+        vector<Node*> buffer_child;
+        for(int i=0;i<buffer.size()-1;i++){
+            if(buffer[i]->left) buffer_child.push_back(buffer[i]->left);
+            if(buffer[i]->right) buffer_child.push_back(buffer[i]->right);
+            buffer[i]->next = buffer[i+1];
+        }
+        if(buffer.back()->left) buffer_child.push_back(buffer.back()->left);
+        if(buffer.back()->right)    buffer_child.push_back(buffer.back()->right);
+        getNode(buffer_child);
+        
+    }
+    Node* connect(Node* root) {
+        if(root == NULL)    return root;
+        vector<Node*> buffer;
+        buffer.push_back(root);
+        getNode(buffer);
+        
+        return root;
+    }
+};

@@ -11,21 +11,14 @@
  */
 class Solution {
 public:
-    bool dfs(TreeNode* node, TreeNode* min, TreeNode* max){
-        if(node == NULL){
-            return true;
-        }
-        if(min!=NULL && node->val <= min->val){
-            return false;
-        }
-        if(max!=NULL && node->val >= max->val){
-            return false;
-        }
-
-        return dfs(node->left, min, node) && dfs(node->right, node, max);
+    bool validate(TreeNode* root, long min, long max){
+        if(root == NULL)    return true;
+        int num = root->val;
+        if(num>=max || num<=min)  return false;
+        
+        return validate(root->left, min, num) && validate(root->right, num, max);
     }
-    
     bool isValidBST(TreeNode* root) {
-        return dfs(root, NULL, NULL);
+        return validate(root->left, LONG_MIN, root->val) && validate(root->right, root->val, LONG_MAX);
     }
 };
