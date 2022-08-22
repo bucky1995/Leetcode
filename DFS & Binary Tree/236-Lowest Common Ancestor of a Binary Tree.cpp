@@ -86,21 +86,17 @@ public:
 
 class Solution3 {
 public:
-    TreeNode* dfs(TreeNode* node, TreeNode* p, TreeNode* q){
-        if(node == NULL){
-            return NULL;
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root == NULL)    return NULL;
+        if(root == p || root == q){
+            return root;
         }
-        if(node == p || node == q){
-            return node;
-        }
-        TreeNode* left= dfs(node->left, p,q);
-        TreeNode* right = dfs(node->right, p,q);
-        if(left && right){
-            return node;
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        
+        if(left&&right){
+            return root;
         }
         return left == NULL ? right : left;
-    }
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        return dfs(root, p, q);
     }
 };
